@@ -2,6 +2,7 @@ defmodule VseMinesweeperWeb.GameLive do
   use VseMinesweeperWeb, :live_view
 
   alias VseMinesweeper.Game
+  alias VseMinesweeper.Game.Location
 
   @impl true
   def mount(_params, _session, socket) do
@@ -11,6 +12,23 @@ defmodule VseMinesweeperWeb.GameLive do
     |> assign(:tiles_revealed, [])
     |> assign(:game_over, false)
 
-    {:ok, assign(socket, :game, Game.generate())}
+    {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("reveal", %{"x" => x, "y" => y}, socket) do
+    with {x, _} <- Integer.parse(x),
+         {y, _} <- Integer.parse(y) do
+      socket = socket
+      |> assign(:tiles_revealed, [%Location{x: x, y: y}])
+
+      IO.inspect(socket.assigns)
+
+      {:noreply, socket}
+    end
+
+    IO.inspect(socket.assigns)
+
+    {:noreply, socket}
   end
 end

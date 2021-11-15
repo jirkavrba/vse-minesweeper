@@ -10,9 +10,14 @@
                     %>
 
                     <%= cond do %>
-                        <% tile.location in @flags_placed   -> %> <div class="tile" id={id}>F</div>
-                        <% tile.location in @tiles_revealed -> %> <div class="tile" id={id}><%= tile.number %></div>
-                        <% true                             -> %> <div class="tile tile--hidden"></div>
+                        <% tile.location in @flags_placed   -> %> 
+                            <div class="tile" id={id}>F</div>
+
+                        <% tile.location in @tiles_revealed -> %> 
+                            <div class="tile" id={id}><%= tile.number %></div>
+
+                        <% true                             -> %> 
+                            <div class="tile tile--hidden" phx-click="reveal" phx-value-x={x} phx-value-y={y}><%= tile.number %></div>
                     <% end %>
 
                 <% end %>

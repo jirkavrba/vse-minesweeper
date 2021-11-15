@@ -54,13 +54,16 @@ main .game-board .tiles .row .tile {
 }
 
 main .game-board .tiles .row .tile.tile--hidden {
-  border: 2px dashed #aaaaaa;
+  border: 2px solid #aaaaaa;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0.5;
 }
 
 main .game-board .tiles .row .tile.tile--hidden:hover {
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.5);
-  border: 2px dashed #000000;
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px solid #000000;
+  opacity: 1;
 }
 
 main .button {

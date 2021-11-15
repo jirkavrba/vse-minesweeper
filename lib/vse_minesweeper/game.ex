@@ -1,12 +1,16 @@
 defmodule VseMinesweeper.Game do
+  alias VseMinesweeper.GameGenerator
+
   @type t :: %__MODULE__{
+          width: integer(),
+          height: integer(),
           tiles: list(Tile.t()),
           mines: list(Location.t())
         }
 
-  @enforce_keys [:tiles, :mines, :flags_placed]
+  @enforce_keys [:width, :height, :tiles, :mines, :flags_placed]
 
-  defstruct [:tiles, :mines, :flags_placed]
+  defstruct [:width, :height, :tiles, :mines, :flags_placed]
 
   defmodule Location do
     @type t :: %__MODULE__{
@@ -38,8 +42,20 @@ defmodule VseMinesweeper.Game do
     end
   end
 
-  @spec generate(integer()) :: t()
-  def generate(number_of_mines) do
-   # TODO: Implement level generator
+  @width 16
+
+  @height 8
+
+  @number_of_mines 30
+
+  @spec generate() :: t()
+  def generate() do
+    game = GameGenerator.generate_new_game(
+      @width,
+      @height,
+      @number_of_mines
+    )
+
+    game
   end
 end

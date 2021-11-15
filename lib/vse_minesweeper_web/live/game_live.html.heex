@@ -1,5 +1,18 @@
 <div class="game-board">
     <img src={Routes.static_path(@socket, "/images/rajska-budova.png")}>
     <div class="tiles">
+        <%= for y <- 0..(@game.height - 1) do %>
+            <div class="row">
+                <%= for x <- 0..(@game.width - 1) do %>
+                    <% tile = Enum.at(@game.tiles, y * @game.height + x) %>
+
+                    <%= if (tile.location in @game.mines) do %>
+                        <div class="tile" id={"tile_#{x}_#{y}"}></div>
+                    <% else %>
+                        <div class="tile" id={"tile_#{x}_#{y}"}><%= tile.number %></div>
+                    <% end %>
+                <% end %>
+            </div>
+        <% end %>
     </div>
 </div>

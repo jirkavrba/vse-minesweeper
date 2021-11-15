@@ -50,11 +50,14 @@ main .game-board .tiles .row .tile {
   width: 48px;
   height: 48px;
   margin: 4px;
-  border: 2px dashed #aaaaaa;
   transition: 0.3s all;
 }
 
-main .game-board .tiles .row .tile:hover {
+main .game-board .tiles .row .tile.tile--hidden {
+  border: 2px dashed #aaaaaa;
+}
+
+main .game-board .tiles .row .tile.tile--hidden:hover {
   cursor: pointer;
   background: rgba(255, 255, 255, 0.5);
   border: 2px dashed #000000;

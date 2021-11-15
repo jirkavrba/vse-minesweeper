@@ -15,7 +15,6 @@ defmodule VseMinesweeper.GameGenerator do
       height: height,
       tiles: tiles,
       mines: mines,
-      flags_placed: []
     }
   end
 

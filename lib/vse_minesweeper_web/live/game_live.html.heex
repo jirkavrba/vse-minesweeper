@@ -4,22 +4,16 @@
         <%= for y <- 0..(@game.height - 1) do %>
             <div class="row">
                 <%= for x <- 0..(@game.width - 1) do %>
-                    <% 
-                        tile = Enum.at(@game.tiles, y * @game.height + x) 
-                        id = "tile_#{x}_#{y}"
-                    %>
-
                     <%= cond do %>
-                        <% tile.location in @flags_placed   -> %> 
-                            <div class="tile" id={id}>F</div>
+                        <% tile_at(@game, x, y).location in @game.flags_placed -> %>
+                            <div class="tile">F</div>
 
-                        <% tile.location in @tiles_revealed -> %> 
-                            <div class="tile" id={id}><%= tile.number %></div>
+                        <% tile_at(@game, x, y).location in @game.revealed_tiles -> %>
+                            <div class="tile">R<%= tile_at(@game, x, y).number %></div>
 
-                        <% true                             -> %> 
-                            <div class="tile tile--hidden" phx-click="reveal" phx-value-x={x} phx-value-y={y}><%= tile.number %></div>
+                        <% true -> %>
+                            <div class="tile tile--hidden" phx-click="reveal" phx-value-x={x} phx-value-y={y}></div>
                     <% end %>
-
                 <% end %>
             </div>
         <% end %>

@@ -21,7 +21,7 @@ defmodule VseMinesweeper.GameGenerator do
     locations = for y <- 0..(height - 1), x <- 0..(width - 1), do: %Location{x: x, y: y}
 
     # tiles around the start position are excluded so no mines can be generated there
-    mines = select_mines(number_of_mines, locations -- neighbours(start), [])
+    mines = select_mines(number_of_mines, locations -- Location.neighbours(start), [])
     tiles = compute_tiles(locations, mines)
 
     %Game{
@@ -52,18 +52,11 @@ defmodule VseMinesweeper.GameGenerator do
 
   @spec compute_tile(Location.t(), list(Location.t())) :: Tile.t()
   defp compute_tile(location, mines) do
-    number = Enum.count(neighbours(location), fn tile -> tile in mines end)
+    number = Enum.count(Location.neighbours(location), fn tile -> tile in mines end)
 
     %Tile{
       location: location,
       number: number
     }
-  end
-
-  @spec neighbours(Location.t()) :: list(Location.t())
-  defp neighbours(location)  do
-    for x <- -1..1, y <- -1..1 do
-      %Location{x: location.x + x, y: location.y + y}
-    end
   end
 end

@@ -34,6 +34,13 @@ defmodule VseMinesweeper.Game do
     @enforce_keys [:x, :y]
 
     defstruct [:x, :y]
+
+    @spec neighbours(Location.t()) :: list(Location.t())
+    def neighbours(location)  do
+      for x <- -1..1, y <- -1..1 do
+        %Location{x: location.x + x, y: location.y + y}
+      end
+    end
   end
 
   defmodule Tile do
@@ -75,14 +82,29 @@ defmodule VseMinesweeper.Game do
     GameGenerator.generate_empty_game(@width, @height)
   end
 
+  def tile_at(%__MODULE__{tiles: tiles, width: width}, x, y) do
+    Enum.at(tiles, y * width + x)
+  end
+
+  def contains_tile(%__MODULE__{width: width, height: height}, x, y) do
+    x in 0..(width - 1) and y in 0..(height - 1)
+  end
+
   @spec reveal_tile(t(), integer(), integer()) :: t()
-  def reveal_tile(%__MODULE__{mines: mines} = game, x, y) do
+  def reveal_tile(%__MODULE__{mines: mines, revealed_tiles: revealed_tiles} = game, x, y) do
     location = %Location{x: x, y: y}
 
-    if location in mines do
-      game_over(game)
-    else
-      reveal_number_tile(game, location)
+    cond do
+      location in mines                                            -> game_over(game)
+      contains_tile(game, x, y) and tile_at(game, x, y).number > 0 -> reveal_number_tile(game, location)
+      contains_tile(game, x, y) and location not in revealed_tiles ->
+        Enum.reduce(
+          Location.neighbours(location),
+          reveal_number_tile(game, location),
+          fn %Location{x: x, y: y}, game -> reveal_tile(game, x, y) end
+        )
+
+      true -> game
     end
   end
 
@@ -94,9 +116,7 @@ defmodule VseMinesweeper.Game do
   end
 
   @spec reveal_number_tile(t(), Location.t()) :: t()
-  defp reveal_number_tile(%__MODULE__{tiles: tiles, revealed_tiles: revealed_tiles} = game, %Location{x: x, y: y} = location) do
-    # TODO: Implement revealing sequence of tiles and checking for win conditions
-    game
-    |> Map.put(:revealed_tiles, revealed_tiles ++ [location])
+  defp reveal_number_tile(%__MODULE__{revealed_tiles: revealed_tiles} = game, location) do
+    Map.put(game, :revealed_tiles, revealed_tiles ++ [location])
   end
 end

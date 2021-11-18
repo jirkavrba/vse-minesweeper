@@ -28,7 +28,7 @@ defmodule VseMinesweeperWeb.GameLive do
     end
   end
 
-  def tile_at(%Game{tiles: tiles, width: width}, x, y) do
-    Enum.at(tiles, y * width + x)
+  def tile_at(game, x, y) do
+    Game.tile_at(game, x, y)
   end
 end

@@ -3,11 +3,25 @@ defmodule VseMinesweeper.GameGenerator do
   alias VseMinesweeper.Game.Location
   alias VseMinesweeper.Game.Tile
 
-  @spec generate_new_game(integer(), integer(), integer()) :: Game.t()
-  def generate_new_game(width, height, number_of_mines) do
+  @spec generate_empty_game(integer(), integer()) :: Game.t()
+  def generate_empty_game(width, height) do
+    locations = for y <- 0..(height - 1), x <- 0..(width - 1), do: %Location{x: x, y: y}
+    tiles = Enum.map(locations, fn location -> %Tile{location: location, number: 0} end)
+
+    %Game{
+      width: width,
+      height: height,
+      tiles: tiles,
+      mines: []
+    }
+  end
+
+  @spec generate_new_game(integer(), integer(), integer(), Location.t()) :: Game.t()
+  def generate_new_game(width, height, number_of_mines, start) do
     locations = for y <- 0..(height - 1), x <- 0..(width - 1), do: %Location{x: x, y: y}
 
-    mines = select_mines(number_of_mines, locations, [])
+    # tiles around the start position are excluded so no mines can be generated there
+    mines = select_mines(number_of_mines, locations -- neighbours(start), [])
     tiles = compute_tiles(locations, mines)
 
     %Game{
@@ -17,6 +31,7 @@ defmodule VseMinesweeper.GameGenerator do
       mines: mines
     }
   end
+
 
   @spec select_mines(integer(), list(Location.t()), list(Location.t())) :: list(Location.t())
   defp select_mines(0, _locations, mines), do: mines
@@ -38,16 +53,16 @@ defmodule VseMinesweeper.GameGenerator do
 
   @spec compute_tile(Location.t(), list(Location.t())) :: Tile.t()
   defp compute_tile(location, mines) do
-    neighbours = for x <- -1..1, y <- -1..1, do: {x, y}
-
-    number =
-      neighbours
-      |> Enum.map(fn {x, y} -> %Location{x: location.x + x, y: location.y + y} end)
-      |> Enum.count(fn tile -> tile in mines end)
+    number = Enum.count(neighbours(location), fn tile -> tile in mines end)
 
     %Tile{
       location: location,
       number: number
     }
+  end
+
+  @spec neighbours(Location.t()) :: Location.t()
+  defp neighbours(location)  do
+    for x <- -1..1, y <- -1..1, do: %Location{x: location.x + x, y: location.y + y}
   end
 end

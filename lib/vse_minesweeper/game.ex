@@ -59,11 +59,20 @@ defmodule VseMinesweeper.Game do
 
   @height 8
 
-  @number_of_mines 30
+  @number_of_mines 10
 
-  @spec generate() :: t()
-  def generate() do
-    GameGenerator.generate_new_game(@width, @height, @number_of_mines)
+  @spec generate(integer(), integer()) :: t()
+  def generate(x, y) do
+    GameGenerator.generate_new_game(
+      @width,
+      @height,
+      @number_of_mines,
+      %Location{x: x, y: y}
+    )
+  end
+
+  def generate_initial() do
+    GameGenerator.generate_empty_game(@width, @height)
   end
 
   @spec reveal_tile(t(), integer(), integer()) :: t()

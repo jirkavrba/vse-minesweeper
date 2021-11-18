@@ -28,6 +28,11 @@ defmodule VseMinesweeperWeb.GameLive do
     end
   end
 
+  @impl Phoenix.LiveView
+  def handle_event("restart", _params, socket) do
+    {:noreply, assign(socket, :game, Game.generate_initial())}
+  end
+
   def tile_at(game, x, y) do
     Game.tile_at(game, x, y)
   end

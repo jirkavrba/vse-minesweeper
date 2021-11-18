@@ -61,8 +61,10 @@ defmodule VseMinesweeper.GameGenerator do
     }
   end
 
-  @spec neighbours(Location.t()) :: Location.t()
+  @spec neighbours(Location.t()) :: list(Location.t())
   defp neighbours(location)  do
-    for x <- -1..1, y <- -1..1, do: %Location{x: location.x + x, y: location.y + y}
+    for x <- -1..1, y <- -1..1 do
+      %Location{x: location.x + x, y: location.y + y}
+    end
   end
 end

@@ -1,33 +1,39 @@
-<div class="game-board" phx-window-keydown="enable_flag_placing" phx-window-keyup="disable_flag_placing">
-    <img src={Routes.static_path(@socket, "/images/rajska-budova.png")}>
-    <div class="tiles">
-        <%= for y <- 0..(@game.height - 1) do %>
-            <div class="row">
-                <%= for x <- 0..(@game.width - 1) do %>
-                    <%= cond do %>
-                        <% @game.game_over and tile_at(@game, x, y).location in @game.mines -> %>
-                            <div class="tile tile--mine-exploded"><i class="fas fa-bomb"></i></div>
-
-                        <% @game.game_over -> %>
-                            <div class={"tile tile--color-#{tile_at(@game, x, y).number}"}><%= tile_at(@game, x, y).number %></div>
-
-                        <% tile_at(@game, x, y).location in @game.flags -> %>
-                            <div class="tile tile--flag" phx-click="reveal" phx-value-x={x} phx-value-y={y}><i class="fas fa-flag"></i></div>
-
-                        <% tile_at(@game, x, y).location in @game.revealed_tiles -> %>
-                            <div class={"tile tile--color-#{tile_at(@game, x, y).number}"}><%= tile_at(@game, x, y).number %></div>
-
-                        <% true -> %>
-                            <div class="tile tile--hidden" phx-click="reveal" phx-value-x={x} phx-value-y={y}></div>
-                    <% end %>
-                <% end %>
-            </div>
-        <% end %>
-    </div>
-</div>
-
-<%= if @game.game_over do %>
+<%= if @game.won do %>
+    <h1>Našel jsi všechny bomby!</h1>
+    <h2>Na ústní jsi ale dostal Kačírkovou a dneska to bude za F pane kolego :(</h2>
     <a class="button" phx-click="restart">Restart</a>
 <% else %>
-    <span class="help">Shift + click = <i class="fas fa-flag"></i></span>
+    <div class="game-board" phx-window-keydown="enable_flag_placing" phx-window-keyup="disable_flag_placing">
+        <img src={Routes.static_path(@socket, "/images/rajska-budova.png")}>
+        <div class="tiles">
+            <%= for y <- 0..(@game.height - 1) do %>
+                <div class="row">
+                    <%= for x <- 0..(@game.width - 1) do %>
+                        <%= cond do %>
+                            <% @game.game_over and tile_at(@game, x, y).location in @game.mines -> %>
+                                <div class="tile tile--mine-exploded"><i class="fas fa-bomb"></i></div>
+
+                            <% @game.game_over -> %>
+                                <div class={"tile tile--color-#{tile_at(@game, x, y).number}"}><%= tile_at(@game, x, y).number %></div>
+
+                            <% tile_at(@game, x, y).location in @game.flags -> %>
+                                <div class="tile tile--flag" phx-click="reveal" phx-value-x={x} phx-value-y={y}><i class="fas fa-flag"></i></div>
+
+                            <% tile_at(@game, x, y).location in @game.revealed_tiles -> %>
+                                <div class={"tile tile--color-#{tile_at(@game, x, y).number}"}><%= tile_at(@game, x, y).number %></div>
+
+                            <% true -> %>
+                                <div class="tile tile--hidden" phx-click="reveal" phx-value-x={x} phx-value-y={y}></div>
+                        <% end %>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+
+    <%= if @game.game_over do %>
+        <a class="button" phx-click="restart">Restart</a>
+    <% else %>
+        <span class="help">Shift + click = <i class="fas fa-flag"></i></span>
+    <% end %>
 <% end %>

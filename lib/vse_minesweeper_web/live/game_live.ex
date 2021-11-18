@@ -22,11 +22,15 @@ defmodule VseMinesweeperWeb.GameLive do
         do: Game.generate(x, y),
         else: socket.assigns.game
 
-      if (socket.assigns.placing_flags) do
-        {:noreply, assign(socket, :game, Game.toggle_flag(game, x, y))}
-      else
-        {:noreply, assign(socket, :game, Game.reveal_tile(game, x, y))}
-      end
+      action = if (socket.assigns.placing_flags),
+        do: &Game.toggle_flag/3,
+        else: &Game.reveal_tile/3
+
+      game = game
+      |> action.(x, y)
+      |> Game.check_win_conditions()
+
+      {:noreply, assign(socket, :game, game)}
     else
       _ -> {:noreply, socket}
     end

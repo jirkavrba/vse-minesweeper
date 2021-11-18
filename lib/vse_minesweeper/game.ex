@@ -91,10 +91,11 @@ defmodule VseMinesweeper.Game do
   end
 
   @spec reveal_tile(t(), integer(), integer()) :: t()
-  def reveal_tile(%__MODULE__{mines: mines, revealed_tiles: revealed_tiles} = game, x, y) do
+  def reveal_tile(%__MODULE__{mines: mines, revealed_tiles: revealed_tiles, flags: flags} = game, x, y) do
     location = %Location{x: x, y: y}
 
     cond do
+      location in flags                                            -> game
       location in mines                                            -> game_over(game)
       contains_tile(game, x, y) and tile_at(game, x, y).number > 0 -> reveal_number_tile(game, location)
       contains_tile(game, x, y) and location not in revealed_tiles ->
@@ -117,6 +118,14 @@ defmodule VseMinesweeper.Game do
       location in flags                                       -> Map.put(game, :flags, flags -- [location])
       location not in flags and length(flags) < length(mines) -> Map.put(game, :flags, flags ++ [location])
       true                                                    -> game
+    end
+  end
+
+  def check_win_conditions(%__MODULE__{mines: mines, flags: flags, revealed_tiles: revealed_tiles, width: width, height: height} = game) do
+    cond do
+      length(revealed_tiles ++ flags) < width * height -> game
+      Enum.sort(mines) != Enum.sort(flags)             -> game
+      true                                             -> Map.put(game, :won, true)
     end
   end
 

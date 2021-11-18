@@ -17,12 +17,12 @@ defmodule VseMinesweeperWeb.GameLive do
       socket = assign(socket, :game, game)
 
       {:noreply, socket}
+    else
+      _ -> {:noreply, socket}
     end
-
-    {:noreply, socket}
   end
 
-  def tile_at(%Game{tiles: tiles, height: height}, x, y) do
-    Enum.at(tiles, y * height + x)
+  def tile_at(%Game{tiles: tiles, width: width}, x, y) do
+    Enum.at(tiles, y * width + x)
   end
 end

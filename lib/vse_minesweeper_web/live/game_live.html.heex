@@ -9,7 +9,7 @@
                             <div class="tile">F</div>
 
                         <% tile_at(@game, x, y).location in @game.revealed_tiles -> %>
-                            <div class="tile">R<%= tile_at(@game, x, y).number %></div>
+                            <div class="tile"><%= tile_at(@game, x, y).number %></div>
 
                         <% true -> %>
                             <div class="tile tile--hidden" phx-click="reveal" phx-value-x={x} phx-value-y={y}></div>

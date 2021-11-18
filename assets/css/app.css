@@ -51,6 +51,8 @@ main .game-board .tiles .row .tile {
   height: 48px;
   margin: 4px;
   transition: 0.3s all;
+  border: 2px solid #000000;
+  background: white;
 }
 
 main .game-board .tiles .row .tile.tile--hidden {

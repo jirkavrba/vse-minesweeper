@@ -32,7 +32,6 @@ defmodule VseMinesweeper.GameGenerator do
     }
   end
 
-
   @spec select_mines(integer(), list(Location.t()), list(Location.t())) :: list(Location.t())
   defp select_mines(0, _locations, mines), do: mines
 

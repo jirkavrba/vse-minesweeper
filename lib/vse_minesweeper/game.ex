@@ -59,7 +59,7 @@ defmodule VseMinesweeper.Game do
 
   @height 8
 
-  @number_of_mines 10
+  @number_of_mines 16
 
   @spec generate(integer(), integer()) :: t()
   def generate(x, y) do

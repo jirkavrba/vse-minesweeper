@@ -5,11 +5,17 @@
             <div class="row">
                 <%= for x <- 0..(@game.width - 1) do %>
                     <%= cond do %>
+                        <% @game.game_over and tile_at(@game, x, y).location in @game.mines -> %>
+                            <div class="tile tile--mine-exploded"><i class="fas fa-bomb"></i></div>
+
+                        <% @game.game_over -> %>
+                            <div class={"tile tile--color-#{tile_at(@game, x, y).number}"}><%= tile_at(@game, x, y).number %></div>
+
                         <% tile_at(@game, x, y).location in @game.flags_placed -> %>
                             <div class="tile">F</div>
 
                         <% tile_at(@game, x, y).location in @game.revealed_tiles -> %>
-                            <div class="tile"><%= tile_at(@game, x, y).number %></div>
+                            <div class={"tile tile--color-#{tile_at(@game, x, y).number}"}><%= tile_at(@game, x, y).number %></div>
 
                         <% true -> %>
                             <div class="tile tile--hidden" phx-click="reveal" phx-value-x={x} phx-value-y={y}></div>
@@ -19,3 +25,9 @@
         <% end %>
     </div>
 </div>
+
+<%= if @game.game_over do %>
+    <div>
+
+    </div>
+<% end %>

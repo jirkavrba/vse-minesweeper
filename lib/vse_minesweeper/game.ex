@@ -82,10 +82,12 @@ defmodule VseMinesweeper.Game do
     GameGenerator.generate_empty_game(@width, @height)
   end
 
+  @spec tile_at(t(), integer(), integer()) :: Tile.t()
   def tile_at(%__MODULE__{tiles: tiles, width: width}, x, y) do
     Enum.at(tiles, y * width + x)
   end
 
+  @spec contains_tile(t(), integer(), integer()) :: boolean()
   def contains_tile(%__MODULE__{width: width, height: height}, x, y) do
     x in 0..(width - 1) and y in 0..(height - 1)
   end
@@ -109,6 +111,7 @@ defmodule VseMinesweeper.Game do
     end
   end
 
+  @spec toggle_flag(t(), integer(), integer()) :: t()
   def toggle_flag(%__MODULE__{mines: mines, revealed_tiles: revealed_tiles, flags: flags} = game, x, y) do
     location = %Location{x: x, y: y}
 
@@ -121,6 +124,7 @@ defmodule VseMinesweeper.Game do
     end
   end
 
+  @spec check_win_conditions(t()) :: t()
   def check_win_conditions(%__MODULE__{mines: mines, flags: flags, revealed_tiles: revealed_tiles, width: width, height: height} = game) do
     cond do
       length(revealed_tiles ++ flags) < width * height -> game

@@ -5,8 +5,11 @@ defmodule VseMinesweeperWeb.GameLive do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    # TODO: Do not generate full game, just list of empty tiles
-    {:ok, assign(socket, :game, Game.generate_initial())}
+    socket = socket
+    |> assign(:game, Game.generate_initial())
+    |> assign(:placing_flags, false)
+
+    {:ok, socket}
   end
 
   @impl Phoenix.LiveView
@@ -19,18 +22,34 @@ defmodule VseMinesweeperWeb.GameLive do
         do: Game.generate(x, y),
         else: socket.assigns.game
 
-      game = Game.reveal_tile(game, x, y)
-      socket = assign(socket, :game, game)
-
-      {:noreply, socket}
+      if (socket.assigns.placing_flags) do
+        {:noreply, assign(socket, :game, Game.toggle_flag(game, x, y))}
+      else
+        {:noreply, assign(socket, :game, Game.reveal_tile(game, x, y))}
+      end
     else
       _ -> {:noreply, socket}
     end
   end
 
   @impl Phoenix.LiveView
+  def handle_event("enable_flag_placing", %{"key" => "Shift"}, socket) do
+    {:noreply, assign(socket, :placing_flags, true)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("disable_flag_placing", %{"key" => "Shift"}, socket) do
+    {:noreply, assign(socket, :placing_flags, false)}
+  end
+
+  @impl Phoenix.LiveView
   def handle_event("restart", _params, socket) do
     {:noreply, assign(socket, :game, Game.generate_initial())}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event(_event, _params, socket) do
+    {:noreply, socket}
   end
 
   def tile_at(game, x, y) do

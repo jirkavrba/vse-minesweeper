@@ -1,4 +1,4 @@
-<div class="game-board">
+<div class="game-board" phx-window-keydown="enable_flag_placing" phx-window-keyup="disable_flag_placing">
     <img src={Routes.static_path(@socket, "/images/rajska-budova.png")}>
     <div class="tiles">
         <%= for y <- 0..(@game.height - 1) do %>
@@ -11,8 +11,8 @@
                         <% @game.game_over -> %>
                             <div class={"tile tile--color-#{tile_at(@game, x, y).number}"}><%= tile_at(@game, x, y).number %></div>
 
-                        <% tile_at(@game, x, y).location in @game.flags_placed -> %>
-                            <div class="tile">F</div>
+                        <% tile_at(@game, x, y).location in @game.flags -> %>
+                            <div class="tile tile--flag" phx-click="reveal" phx-value-x={x} phx-value-y={y}><i class="fas fa-flag"></i></div>
 
                         <% tile_at(@game, x, y).location in @game.revealed_tiles -> %>
                             <div class={"tile tile--color-#{tile_at(@game, x, y).number}"}><%= tile_at(@game, x, y).number %></div>
@@ -27,5 +27,7 @@
 </div>
 
 <%= if @game.game_over do %>
-    <a href="#restart" class="button" phx-click="restart">Restart</a>
+    <a class="button" phx-click="restart">Restart</a>
+<% else %>
+    <span class="help">Shift + click = <i class="fas fa-flag"></i></span>
 <% end %>

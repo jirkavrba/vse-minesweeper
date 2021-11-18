@@ -7,7 +7,7 @@ defmodule VseMinesweeper.Game do
           tiles: list(Tile.t()),
           mines: list(Location.t()),
           revealed_tiles: list(Location.t()),
-          flags_placed: list(Location.t()),
+          flags: list(Location.t()),
           game_over: boolean(),
           won: boolean()
         }
@@ -20,7 +20,7 @@ defmodule VseMinesweeper.Game do
     :tiles,
     :mines,
     revealed_tiles: [],
-    flags_placed: [],
+    flags: [],
     game_over: false,
     won: false
   ]
@@ -105,6 +105,18 @@ defmodule VseMinesweeper.Game do
         )
 
       true -> game
+    end
+  end
+
+  def toggle_flag(%__MODULE__{mines: mines, revealed_tiles: revealed_tiles, flags: flags} = game, x, y) do
+    location = %Location{x: x, y: y}
+
+    # user cannot place more flags then the number of mines
+    cond do
+      location in revealed_tiles                              -> game
+      location in flags                                       -> Map.put(game, :flags, flags -- [location])
+      location not in flags and length(flags) < length(mines) -> Map.put(game, :flags, flags ++ [location])
+      true                                                    -> game
     end
   end
 

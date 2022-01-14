@@ -62,11 +62,11 @@ defmodule VseMinesweeper.Game do
     end
   end
 
-  @width 16
+  @width 20
 
-  @height 8
-
-  @number_of_mines 16
+  @height 10
+  
+  @number_of_mines 20
 
   @spec generate(integer(), integer()) :: t()
   def generate(x, y) do
